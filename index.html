@@ -3,14 +3,16 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Gridea</title>
+<title>SandMonth</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.12.0/css/all.min.css">
-<link rel="shortcut icon" href="https://SandMonth.github.io/favicon.ico?v=1618418591641">
+<link rel="shortcut icon" href="https://SandMonth.github.io/favicon.ico?v=1618992713921">
 <link rel="stylesheet" href="https://SandMonth.github.io/styles/main.css">
 
+
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css">
 
 
 
@@ -20,7 +22,7 @@
 
 
 
-    <meta name="description" content="温故而知新">
+    <meta name="description" content="个人记录博客">
   </head>
   <body>
     <div id="app" class="main">
@@ -29,8 +31,8 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://SandMonth.github.io">
-        <img src="https://SandMonth.github.io/images/avatar.png?v=1618418591641" class="site-logo">
-        <h1 class="site-title">Gridea</h1>
+        <img src="https://SandMonth.github.io/images/avatar.png?v=1618992713921" class="site-logo">
+        <h1 class="site-title">SandMonth</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
         <div class="line"></div>
@@ -81,10 +83,10 @@
       
     </div>
     <div class="site-description">
-      温故而知新
+      个人记录博客
     </div>
     <div class="site-footer">
-      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://SandMonth.github.io/atom.xml" target="_blank">RSS</a>
+      SandMonth | <a class="rss" href="https://SandMonth.github.io/atom.xml" target="_blank">RSS</a>
     </div>
   </div>
 </div>
@@ -92,28 +94,6 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://SandMonth.github.io/post/hello-gridea/">
-                  <h2 class="post-title">Hello Gridea</h2>
-                </a>
-                <div class="post-date">
-                  2018-12-12
-                </div>
-                <div class="post-abstract">
-                  <p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
-✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
-
-                </div>
-              </div>
-              
-                <a class="right" href="https://SandMonth.github.io/post/hello-gridea/">
-                  <div class="feature-container" style="background-image: url('https://SandMonth.github.io/post-images/hello-gridea.png')">
-                  </div>
-                </a>
-              
-            </article>
           
 
           <div class="pagination-container">
@@ -139,6 +119,11 @@ var app = new Vue({
 
 </script>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
 
 
 
