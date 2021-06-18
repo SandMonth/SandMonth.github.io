@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://SandMonth.github.io</id>
     <title>SandMonth</title>
-    <updated>2021-06-18T17:22:09.315Z</updated>
+    <updated>2021-06-18T17:25:40.792Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://SandMonth.github.io"/>
     <link rel="self" href="https://SandMonth.github.io/atom.xml"/>
@@ -16,7 +16,8 @@
         <link href="https://SandMonth.github.io/post/usaco08febhotel-g-qu-jian-zui-da-zi-duan-he-bian-shi-xian-duan-shu/">
         </link>
         <updated>2021-06-18T16:23:00.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="题意">题意:</h2>
+        <content type="html"><![CDATA[<!-- more -->
+<h2 id="题意">题意:</h2>
 <p>​		有n个房间(1-n),最开始所有的房间都是没有人住的,对你询问m次,每次有两个操作:</p>
 <ul>
 <li>1,查询房间,输入一个x找1-n的房间中有连续长度为x的空房,输出连续x个空房中的最左的房间号,并且房间设置为有人,如果没有连续的就输出0</li>
