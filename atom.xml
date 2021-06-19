@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://SandMonth.github.io</id>
     <title>SandMonth</title>
-    <updated>2021-06-18T17:25:40.792Z</updated>
+    <updated>2021-06-19T05:40:16.764Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://SandMonth.github.io"/>
     <link rel="self" href="https://SandMonth.github.io/atom.xml"/>
@@ -16,7 +16,10 @@
         <link href="https://SandMonth.github.io/post/usaco08febhotel-g-qu-jian-zui-da-zi-duan-he-bian-shi-xian-duan-shu/">
         </link>
         <updated>2021-06-18T16:23:00.000Z</updated>
-        <content type="html"><![CDATA[<!-- more -->
+        <summary type="html"><![CDATA[<p>[USACO08FEB]Hotel G (区间最大子段和变式,线段树)</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>[USACO08FEB]Hotel G (区间最大子段和变式,线段树)</p>
+<!-- more -->
 <h2 id="题意">题意:</h2>
 <p>​		有n个房间(1-n),最开始所有的房间都是没有人住的,对你询问m次,每次有两个操作:</p>
 <ul>
