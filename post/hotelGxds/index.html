@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>[USACO08FEB]Hotel G (区间最大子段和变式,线段树) | SandMonth</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://SandMonth.github.io/favicon.ico?v=1624183447605">
+<link rel="stylesheet" href="https://SandMonth.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="[USACO08FEB]Hotel G (区间最大子段和变式,线段树)
+
+题意:
+​		有n个房间(1-n),最开始所有的房间都是没有人住的,对你询问m次,每次有两个操作:
+
+1,查询房间,输入一个x找1-n的房间中有连续长度为x的空房,输..." />
+    <meta name="keywords" content="区间最大子段和,algorithm,线段树" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://SandMonth.github.io">
+        <img src="https://SandMonth.github.io/images/avatar.png?v=1624183447605" class="site-logo">
+        <h1 class="site-title">SandMonth</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      个人记录博客
+    </div>
+    <div class="site-footer">
+      SandMonth | <a class="rss" href="https://SandMonth.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">[USACO08FEB]Hotel G (区间最大子段和变式,线段树)</h2>
+            <div class="post-date">2021-06-19</div>
+            
+              <div class="feature-container" style="background-image: url('https://SandMonth.github.io/post-images/hotelGxds.jpeg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>[USACO08FEB]Hotel G (区间最大子段和变式,线段树)</p>
+<!-- more -->
+<h2 id="题意">题意:</h2>
+<p>​		有n个房间(1-n),最开始所有的房间都是没有人住的,对你询问m次,每次有两个操作:</p>
+<ul>
+<li>1,查询房间,输入一个x找1-n的房间中有连续长度为x的空房,输出连续x个空房中的最左的房间号,并且房间设置为有人,如果没有连续的就输出0</li>
+<li>2.退房,输入x,y代表房间号x -&gt; x + y - 1 退房, 即让房间为空</li>
+</ul>
+<h2 id="题解">题解:</h2>
+<p>​	从题意上来看是一个区间的操作,所以可以往线段树方面去想.</p>
+<p>​	使用线段树,那么考虑如何维护连续空房间的数量,对于连续的空房间其实就是类似找区间的最大子段和,我们能参考线段树区间最大子段和的维护值操作.所以也能确定线段树中的值存储每个点所代表区间的长度</p>
+<blockquote>
+<p>区间最大子段和 [解释]</p>
+<p>给出n个数,q次操作,每次修改值或者查找区间[L,R]内最大的连续子段和</p>
+</blockquote>
+<p>​	对于树上的一个点使用 ls 和 rs 数组维护该点的左子树区间和右子树区间的最大连续字段和,使用tree数组维护ls和rs数组中的最大值加上左子树和右子树中的链接区间,所以建树过程为：</p>
+<pre><code class="language-cpp">void build(ll rt, ll l, ll r){
+    tree[rt] = ls[rt] = rs[rt] = len[rt] = r - l + 1;
+    if(l == r) return;
+    ll mid = (l + r) &gt;&gt; 1;
+    build(rt &lt;&lt; 1, l, mid);
+    build(rt &lt;&lt; 1 | 1, mid + 1, r);
+}
+</code></pre>
+<p>​	对于题目中的查询操作,每次找该点到左树,左右树链接处和右树的最大连续字段和进行对比,如果左子树的连续子段大于则向左找,如果找了左子树没有找到则找左右子树链接部分,范围大于等于要找的话直接给出值，如果前面两个都没有找到则直接往右子树找</p>
+<pre><code class="language-cpp">ll query(ll rt, ll l, ll r, ll v){
+    push_up(rt);
+    pt(rt);
+    if(l == r) return l;
+    ll mid = (l + r) &gt;&gt; 1;
+    if(tree[rt &lt;&lt; 1] &gt;= v ) return query(rt &lt;&lt; 1, l, mid, v); //符合则向左子树继续找
+    else if(ls[rt &lt;&lt; 1 | 1] + rs[rt &lt;&lt; 1] &gt;= v) return mid - rs[rt &lt;&lt; 1] + 1; //符合直接返回最左点
+    else return query(rt &lt;&lt; 1 | 1, mid + 1, r, v); //上面都不符合则只可能在右子树中
+}
+</code></pre>
+<p>​		题目中有两个修改操作,则对应的修改懒标记可以使用两个标签值来判断进行退房还是住房操作.(len 表示对应点的区间长度)</p>
+<pre><code class="language-cpp">void push_up(ll x){ //懒标记
+    if(lazy[x]){
+        if(lazy[x] == 1){
+            lazy[x &lt;&lt; 1] = lazy[x];
+            lazy[x &lt;&lt; 1 | 1] = lazy[x];
+            tree[x &lt;&lt; 1] = ls[x &lt;&lt; 1] = rs[x &lt;&lt; 1] = 0;
+            tree[x &lt;&lt; 1 | 1] = ls[x &lt;&lt; 1 | 1] = rs[x &lt;&lt; 1 | 1] = 0;
+            lazy[x] = 0;
+        }else{
+            lazy[x &lt;&lt; 1] = lazy[x &lt;&lt; 1| 1] = 2;
+            tree[x &lt;&lt; 1] = ls[x &lt;&lt; 1] = rs[x &lt;&lt; 1] = len[x &lt;&lt; 1];
+            tree[x &lt;&lt; 1 | 1] = ls[x &lt;&lt; 1 | 1] = rs[x &lt;&lt; 1 | 1] = len[x &lt;&lt; 1 | 1];
+            lazy[x] = 0;
+        }
+    }
+}
+//修改
+//tag =  1 清空 2添加 
+void update(ll rt, ll l, ll r, ll L, ll R, ll tag){  
+    push_up(rt);
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        if(tag == 1) tree[rt] = ls[rt] = rs[rt] = 0;
+        else tree[rt] = ls[rt] = rs[rt] = len[rt];
+        lazy[rt] = tag;
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) update(rt &lt;&lt; 1, l, mid, L, R, tag);
+    if(mid  &lt; R) update(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, tag);
+    pt(rt);
+}
+</code></pre>
+<p>对于修改完后每次维护的ls,rs,tree数组可以分组讨论</p>
+<ul>
+<li>ls： 有两种情况<br>
+1. 该点的左子树房间全是空的,则  该点ls =  左子树区间长度 + 右子树的ls<br>
+2. 该点的ls = 左子树的ls</li>
+<li>rs: 有两种情况
+<ol>
+<li>该点的右子树房间全是空的，则该点rs = 右子树区间长度 + 左子树rs</li>
+<li>该点的rs = 右子树的rs</li>
+</ol>
+</li>
+<li>tree: 直接取左子树右子树和链接处最大即可，链接处为左子树的rs + 右子树的ls</li>
+</ul>
+<pre><code class="language-cpp">void pt(ll rt){
+    if(tree[rt &lt;&lt; 1] == len[rt &lt;&lt; 1]){
+        ls[rt] = ls[rt &lt;&lt; 1 | 1] + len[rt &lt;&lt; 1];
+    }else ls[rt] = ls[rt &lt;&lt; 1];
+    if(tree[rt &lt;&lt; 1 | 1] == len[rt &lt;&lt; 1 | 1]){
+        rs[rt] = rs[rt &lt;&lt; 1] + len[rt &lt;&lt; 1 | 1];
+    }else rs[rt] = rs[rt &lt;&lt; 1 | 1];
+    tree[rt] = max(max(tree[rt &lt;&lt; 1], tree[rt &lt;&lt; 1 | 1]), ls[rt &lt;&lt; 1 | 1] + rs[rt &lt;&lt; 1]);
+}
+</code></pre>
+<h2 id="完整代码">完整代码</h2>
+<pre><code class="language-cpp">ll tree[N], ls[N], rs[N], len[N];
+ll lazy[N];
+ll n, m;
+void build(ll rt, ll l, ll r){
+    tree[rt] = ls[rt] = rs[rt] = len[rt] = r - l + 1;
+    if(l == r) return;
+    ll mid = (l + r) &gt;&gt; 1;
+    build(rt &lt;&lt; 1, l, mid);
+    build(rt &lt;&lt; 1 | 1, mid + 1, r);
+}
+void pt(ll rt){
+    if(tree[rt &lt;&lt; 1] == len[rt &lt;&lt; 1]){
+        ls[rt] = ls[rt &lt;&lt; 1 | 1] + len[rt &lt;&lt; 1];
+    }else ls[rt] = ls[rt &lt;&lt; 1];
+    if(tree[rt &lt;&lt; 1 | 1] == len[rt &lt;&lt; 1 | 1]){
+        rs[rt] = rs[rt &lt;&lt; 1] + len[rt &lt;&lt; 1 | 1];
+    }else rs[rt] = rs[rt &lt;&lt; 1 | 1];
+    tree[rt] = max(max(tree[rt &lt;&lt; 1], tree[rt &lt;&lt; 1 | 1]), ls[rt &lt;&lt; 1 | 1] + rs[rt &lt;&lt; 1]);
+}
+void push_up(ll x){
+    if(lazy[x]){
+        if(lazy[x] == 1){
+            lazy[x &lt;&lt; 1] = lazy[x];
+            lazy[x &lt;&lt; 1 | 1] = lazy[x];
+            tree[x &lt;&lt; 1] = ls[x &lt;&lt; 1] = rs[x &lt;&lt; 1] = 0;
+            tree[x &lt;&lt; 1 | 1] = ls[x &lt;&lt; 1 | 1] = rs[x &lt;&lt; 1 | 1] = 0;
+            lazy[x] = 0;
+        }else{
+            lazy[x &lt;&lt; 1] = lazy[x &lt;&lt; 1| 1] = 2;
+            tree[x &lt;&lt; 1] = ls[x &lt;&lt; 1] = rs[x &lt;&lt; 1] = len[x &lt;&lt; 1];
+            tree[x &lt;&lt; 1 | 1] = ls[x &lt;&lt; 1 | 1] = rs[x &lt;&lt; 1 | 1] = len[x &lt;&lt; 1 | 1];
+            lazy[x] = 0;
+        }
+    }
+}
+//tag =  1 清空 2添加
+void update(ll rt, ll l, ll r, ll L, ll R, ll tag){
+    push_up(rt);
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        if(tag == 1) tree[rt] = ls[rt] = rs[rt] = 0;
+        else tree[rt] = ls[rt] = rs[rt] = len[rt];
+        lazy[rt] = tag;
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) update(rt &lt;&lt; 1, l, mid, L, R, tag);
+    if(mid  &lt; R) update(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, tag);
+    pt(rt);
+}
+
+ll query(ll rt, ll l, ll r, ll v){
+    push_up(rt);
+    pt(rt);
+    if(l == r) return l;
+    ll mid = (l + r) &gt;&gt; 1;
+    if(tree[rt &lt;&lt; 1] &gt;= v ) return query(rt &lt;&lt; 1, l, mid, v);
+    else if(ls[rt &lt;&lt; 1 | 1] + rs[rt &lt;&lt; 1] &gt;= v) return mid - rs[rt &lt;&lt; 1] + 1;
+    else return query(rt &lt;&lt; 1 | 1, mid + 1, r, v);
+}
+int main(){
+    RLL2(n, m);
+    build(1, 1, n);
+    while(m --){
+        ll s; RLL(s);
+        if(s == 1){
+            ll k; RLL(k);
+            if(tree[1] &gt;= k){
+                ll ans = query(1, 1, n, k);
+                PLN(ans);
+                update(1, 1, n, ans, ans + k - 1, 1);
+            }else PLN((ll)0);
+        }else{
+            ll l, r; RLL2(l, r);
+            update(1, 1, n, l, l + r - 1, 2);
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://SandMonth.github.io/tag/yPC4JSZnj/" class="tag">
+                    区间最大子段和
+                  </a>
+                
+                  <a href="https://SandMonth.github.io/tag/h_WkVcBSW/" class="tag">
+                    algorithm
+                  </a>
+                
+                  <a href="https://SandMonth.github.io/tag/kddhACfbi/" class="tag">
+                    线段树
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://SandMonth.github.io/post/test/">
+                  <h3 class="post-title">
+                    TEST
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
