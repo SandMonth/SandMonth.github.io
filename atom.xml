@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://SandMonth.github.io</id>
     <title>SandMonth</title>
-    <updated>2021-06-20T11:48:34.114Z</updated>
+    <updated>2021-07-01T14:45:52.406Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://SandMonth.github.io"/>
     <link rel="self" href="https://SandMonth.github.io/atom.xml"/>
@@ -10,6 +10,460 @@
     <logo>https://SandMonth.github.io/images/avatar.png</logo>
     <icon>https://SandMonth.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, SandMonth</rights>
+    <entry>
+        <title type="html"><![CDATA[ [落谷-紫题-线段树-树链剖分] P6157-有趣的游戏]]></title>
+        <id>https://SandMonth.github.io/post/P6157youqudeyouxi/</id>
+        <link href="https://SandMonth.github.io/post/P6157youqudeyouxi/">
+        </link>
+        <updated>2021-07-01T14:36:24.000Z</updated>
+        <summary type="html"><![CDATA[<p>[落谷-紫题-线段树-树链剖分] P6157-有趣的游戏</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>[落谷-紫题-线段树-树链剖分] P6157-有趣的游戏</p>
+<h2 id="-more-"><!-- more --></h2>
+<blockquote>
+<p>前置知识: 树链剖分 线段树 LCA<br>
+题目：落谷 P6157<br>
+ps:头次做出紫题纪念下,滑稽～滑稽～</p>
+</blockquote>
+<hr>
+<h2 id="题意">题意:</h2>
+<p>​	小A和小B在树上玩游戏，其中树上的每个点都有点权,第i个点的点权为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">w_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>,每次系统会给出一条链,小A可以选出这条链上不同的两个点权x,y，这样小A的得分为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>x</mi></msub><mi>m</mi><mi>o</mi><mi>d</mi><msub><mi>w</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">w_x mod w_y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault">m</span><span class="mord mathdefault">o</span><span class="mord mathdefault">d</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, 选完之后小B从整颗树上进行选择,计分与小A同理.</p>
+<p>​	系统每次会给出两个操作,一为树上的一个点添加<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span></span></span></span>值,一给出一条链给你求出小A的最大值和小B的最大值.</p>
+<p>​	如果小A无法选出两个不同的值则只能输出-1</p>
+<h2 id="题解">题解:</h2>
+<p>​	先分析题目,首先题目说明是在树上的链进行操作(明示了),并且一个操作是给出一个条树上的链求值,那么我考虑使用树链剖分,对于修改点值可以使用树链剖分的线段树修改。</p>
+<p>树链剖分初始化模版冲：</p>
+<pre><code class="language-cpp">ll deep[N], wson[N], top[N], dfn[N], fas[N], pre[N], sz[N];
+// 树深度 重儿子 链头 dfs序 父亲结点 前序序列 子树大小
+void dfs1(ll to, ll fa){
+    fas[to] = fa;
+    deep[to] = deep[fa] + 1;
+    sz[to] = 1;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == fa) continue;
+        dfs1(y, to);
+        sz[to] += sz[y];
+        if(sz[wson[to]] &lt; sz[y]){
+            wson[to] = y;
+        }
+    }
+
+}
+ll cnt = 0;
+void dfs2(ll to, ll de){
+    dfn[to] = ++ cnt;
+    pre[cnt] = to;
+    top[to] = de;
+    if(wson[to]){
+        dfs2(wson[to], de);
+    }else return;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == wson[to] || y == fas[to]) continue;
+        dfs2(y, y);
+    }
+}
+</code></pre>
+<p>​	确定了使用树链剖分之后,在观察题目考虑树上维护什么值,首先分析小A<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>x</mi></msub><mi>m</mi><mi>o</mi><mi>d</mi><msub><mi>w</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">w_x mod w_y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault">m</span><span class="mord mathdefault">o</span><span class="mord mathdefault">d</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>要最大,那么我们贪心的想当<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>x</mi></msub></mrow><annotation encoding="application/x-tex">w_x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">x</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>为次大并且<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>w</mi><mi>y</mi></msub></mrow><annotation encoding="application/x-tex">w_y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.716668em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:-0.02691em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>为最大的时候该值会最大,大家可以敢情理解一下.既然是次大和最大那么对于这颗树可以使用两个值对其进行最大和次大的维护.</p>
+<p>​	对于最开始的建树[其实可以不用pair因为作者最开始做的时候想了一个时间度高的做法,虽然开o2优化过了]：</p>
+<pre><code class="language-cpp">void push_tree(ll rt){
+    pair&lt;ll,ll&gt; a1 = tree[rt &lt;&lt; 1];
+    pair&lt;ll,ll&gt; a2 = tree[rt &lt;&lt; 1 | 1];
+    pair&lt;ll,ll&gt; a3 = tree2[rt &lt;&lt; 1];
+    pair&lt;ll,ll&gt; a4 = tree2[rt &lt;&lt; 1 | 1];
+    ll mx = max(a1.first,max(a2.first, max(a3.first,a4.first)));
+    tree[rt].first = mx;
+    ll mx2 = max(a1.first == mx ? -1 : a1.first,max(a2.first == mx ? -1 : a2.first, max(a3.first == mx ? -1 : a3.first,a4.first == mx ? -1 : a4.first)));
+    tree2[rt].first = mx2;
+}
+void build(ll rt, ll l, ll r){ //线段树建树
+    ls[rt] = l; rs[rt] = r;
+    if(l == r){
+        tree[rt] = make_pair(a[pre[l]], l);
+        tree2[rt] = make_pair(a[pre[l]], l);
+        return ;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    build(rt &lt;&lt; 1, l, mid);
+    build(rt &lt;&lt; 1 | 1, mid + 1, r);
+    push_tree(rt);
+}
+</code></pre>
+<p>​	然后使用LCA对小A的最大值进行计算,以下的mx和cmx最后的结果就是最大值和次大值.</p>
+<pre><code class="language-cpp">    pair&lt;ll, ll&gt; mx = make_pair(-1, -1), cmx = make_pair(-1, -1);
+    while(top[x] != top[y]){
+        if(dfn[top[x]] &lt; dfn[top[y]]) swap(x, y);
+        query(1, 1, n, dfn[top[x]], dfn[x], mx, cmx);
+        x = fas[top[x]];
+    }
+    if(dfn[x] &gt; dfn[y]) swap(x, y);
+    query(1, 1, n, dfn[x], dfn[y], mx, cmx);
+</code></pre>
+<pre><code class="language-cpp">//查找
+void query(ll rt, ll l, ll r, ll L, ll R, pair&lt;ll,ll&gt; &amp;a, pair&lt;ll,ll&gt; &amp;b){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        pair&lt;ll, ll&gt; pp[10];
+        pp[1] = a; pp[2] = b; pp[3] = tree[rt]; pp[4] = tree2[rt];
+        sort(pp + 1, pp + 1 + 4);
+        a = pp[4];
+        for(ll i = 3; i &gt;= 1; i --){
+            if(pp[i].first != pp[4].first){
+                b = pp[i];
+                return;
+            }
+        }
+        b = pp[4];
+        return;
+    }
+    push_tree(rt);
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) query(rt &lt;&lt; 1, l, mid, L, R, a, b);
+    if(mid &lt; R) query(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, a, b);
+}
+</code></pre>
+<p>​</p>
+<p>​	对于小B的操作,大伙最开始的想法肯定是对其树进行点对修改,将点的值该为最小之后取线段树的头结点即可[我最开始也是这么想的],但这样的复杂度最坏为O(deep[tree])而且每次要进行4次操作如果树大的话铁打的超时(如果这么做了可以开个O2优化过优化后巨快).</p>
+<p>​	因为小B是对于整颗树取最大和次大,其实就是维护整个树的值的最大和次大值(其中去除已选的),考虑使用multiset来维护,每次将已选的最大和次大在此数组中删除取出set的次大作为答案,然后再插入回去.每次删除和插入的复杂度为O(logn)并且每次删除需要使用find 找到值所以实际复杂度为O(2logn).</p>
+<pre><code class="language-cpp">ll s1 = mx.first, s2 = cmx.first;
+st.erase(st.find(s1));
+st.erase(st.find(s2));
+ll ans = *(--st.lower_bound(*--st.end()));
+st.insert(s1);
+st.insert(s2);
+</code></pre>
+<p>​	对于每次修改一个点的操作使用线段树的区间操作</p>
+<pre><code class="language-cpp">void update(ll rt, ll l, ll r, ll L, ll R, ll v){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        ll val = tree[rt].first;
+        st.erase(st.find(val));
+        st.insert(val + v);
+        tree[rt] = make_pair(tree[rt].first + v, l);
+        tree2[rt] = make_pair(tree2[rt].first + v, l);
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) update(rt &lt;&lt; 1, l, mid, L, R, v);
+    else update(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, v);
+    push_tree(rt);
+}
+</code></pre>
+<blockquote>
+<p>对于整个算法复杂度为O(6lognmlog^n)</p>
+</blockquote>
+<h2 id="完整代码">完整代码</h2>
+<blockquote>
+<p>该代码为无须开O2度版本</p>
+</blockquote>
+<pre><code class="language-cpp">struct Node{
+    ll to, nxt;
+}e[N];
+multiset&lt;ll&gt; st;
+ll tot = 0, head[N];
+void add(ll a, ll b){
+    e[tot].to = b;
+    e[tot].nxt = head[a];
+    head[a] = tot ++;
+}
+ll n;
+ll a[N];
+ll deep[N], wson[N], top[N], dfn[N], fas[N], pre[N], sz[N];
+void dfs1(ll to, ll fa){
+    fas[to] = fa;
+    deep[to] = deep[fa] + 1;
+    sz[to] = 1;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == fa) continue;
+        dfs1(y, to);
+        sz[to] += sz[y];
+        if(sz[wson[to]] &lt; sz[y]){
+            wson[to] = y;
+        }
+    }
+
+}
+ll cnt = 0;
+void dfs2(ll to, ll de){
+    dfn[to] = ++ cnt;
+    pre[cnt] = to;
+    top[to] = de;
+    if(wson[to]){
+        dfs2(wson[to], de);
+    }else return;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == wson[to] || y == fas[to]) continue;
+        dfs2(y, y);
+    }
+}
+ll ls[N], rs[N];
+pair&lt;ll,ll&gt; tree[N], tree2[N];
+void push_tree(ll rt){
+    pair&lt;ll,ll&gt; a1 = tree[rt &lt;&lt; 1];
+    pair&lt;ll,ll&gt; a2 = tree[rt &lt;&lt; 1 | 1];
+    pair&lt;ll,ll&gt; a3 = tree2[rt &lt;&lt; 1];
+    pair&lt;ll,ll&gt; a4 = tree2[rt &lt;&lt; 1 | 1];
+    ll mx = max(a1.first,max(a2.first, max(a3.first,a4.first)));
+    tree[rt].first = mx;
+    ll mx2 = max(a1.first == mx ? -1 : a1.first,max(a2.first == mx ? -1 : a2.first, max(a3.first == mx ? -1 : a3.first,a4.first == mx ? -1 : a4.first)));
+    tree2[rt].first = mx2;
+}
+void build(ll rt, ll l, ll r){
+    ls[rt] = l; rs[rt] = r;
+    if(l == r){
+        tree[rt] = make_pair(a[pre[l]], l);
+        tree2[rt] = make_pair(a[pre[l]], l);
+        return ;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    build(rt &lt;&lt; 1, l, mid);
+    build(rt &lt;&lt; 1 | 1, mid + 1, r);
+    push_tree(rt);
+}
+void update(ll rt, ll l, ll r, ll L, ll R, ll v){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        ll val = tree[rt].first;
+        st.erase(st.find(val));
+        st.insert(val + v);
+        tree[rt] = make_pair(tree[rt].first + v, l);
+        tree2[rt] = make_pair(tree2[rt].first + v, l);
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) update(rt &lt;&lt; 1, l, mid, L, R, v);
+    else update(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, v);
+    push_tree(rt);
+}
+
+void query(ll rt, ll l, ll r, ll L, ll R, pair&lt;ll,ll&gt; &amp;a, pair&lt;ll,ll&gt; &amp;b){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        pair&lt;ll, ll&gt; pp[10];
+        pp[1] = a; pp[2] = b; pp[3] = tree[rt]; pp[4] = tree2[rt];
+        sort(pp + 1, pp + 1 + 4);
+        a = pp[4];
+        for(ll i = 3; i &gt;= 1; i --){
+            if(pp[i].first != pp[4].first){
+                b = pp[i];
+                return;
+            }
+        }
+        b = pp[4];
+        return;
+    }
+    push_tree(rt);
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) query(rt &lt;&lt; 1, l, mid, L, R, a, b);
+    if(mid &lt; R) query(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, a, b);
+}
+
+void slove(ll x, ll y){
+    pair&lt;ll, ll&gt; mx = make_pair(-1, -1), cmx = make_pair(-1, -1);
+    while(top[x] != top[y]){
+        if(dfn[top[x]] &lt; dfn[top[y]]) swap(x, y);
+        query(1, 1, n, dfn[top[x]], dfn[x], mx, cmx);
+        x = fas[top[x]];
+    }
+    if(dfn[x] &gt; dfn[y]) swap(x, y);
+    query(1, 1, n, dfn[x], dfn[y], mx, cmx);
+    if(mx.first == -1 || cmx.first == -1 || mx.first == cmx.first){
+        PLN((ll) -1);
+        return ;
+    }
+    ll s1 = mx.first, s2 = cmx.first;
+    st.erase(st.find(s1));
+    st.erase(st.find(s2));
+    ll ans = *(--st.lower_bound(*--st.end()));
+    st.insert(s1);
+    st.insert(s2);
+    PLN2(cmx.first, ans);
+}
+int main(){
+    MM(head, -1);
+    RLL(n);
+    FOR(i, 1, n - 1){
+        ll l, r; RLL2(l, r);
+        add(l, r); add(r, l);
+    }
+    FOR(i, 1, n) RLL(a[i]), st.insert(a[i]);
+    dfs1(1, 0);
+    dfs2(1, 1);
+    build(1, 1, n);
+    ll q;
+    RLL(q);
+    while (q --){
+        ll k; RLL(k);
+        if(k == 0){
+            ll x, v;
+            RLL2(x, v);
+            x = dfn[x];
+            update(1, 1, n, x, x, v);
+        }else{
+            ll x, y; RLL2(x, y);
+            slove(x, y);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<blockquote>
+<p>该版本为开O2能过的有点暴力的做法(最开始过的代码后面看了一眼multiset才想到这么优化[太菜了])</p>
+</blockquote>
+<pre><code class="language-cpp">struct Node{
+    ll to, nxt;
+}e[N];
+ll tot = 0, head[N];
+void add(ll a, ll b){
+    e[tot].to = b;
+    e[tot].nxt = head[a];
+    head[a] = tot ++;
+}
+ll n;
+ll a[N];
+ll deep[N], wson[N], top[N], dfn[N], fas[N], pre[N], sz[N];
+void dfs1(ll to, ll fa){
+    fas[to] = fa;
+    deep[to] = deep[fa] + 1;
+    sz[to] = 1;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == fa) continue;
+        dfs1(y, to);
+        sz[to] += sz[y];
+        if(sz[wson[to]] &lt; sz[y]){
+            wson[to] = y;
+        }
+    }
+
+}
+ll cnt = 0;
+void dfs2(ll to, ll de){
+    dfn[to] = ++ cnt;
+    pre[cnt] = to;
+    top[to] = de;
+    if(wson[to]){
+        dfs2(wson[to], de);
+    }else return;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == wson[to] || y == fas[to]) continue;
+        dfs2(y, y);
+    }
+}
+ll ls[N], rs[N];
+pair&lt;ll,ll&gt; tree[N], tree2[N];
+void push_tree(ll rt){
+    pair&lt;ll,ll&gt; as[10];
+    as[1] = tree[rt &lt;&lt; 1];
+    as[2] = tree[rt &lt;&lt; 1 | 1];
+    as[3] = tree2[rt &lt;&lt; 1];
+    as[4] = tree2[rt &lt;&lt; 1 | 1];
+    sort(as + 1, as + 1 + 4);
+    tree[rt] = as[4];
+    for(ll i = 3; i &gt;= 1; i --){
+        if(as[i].first != as[4].first){
+            tree2[rt] = as[i];
+            return;
+        }
+    }
+    tree2[rt] = as[4];
+}
+void build(ll rt, ll l, ll r){
+    ls[rt] = l; rs[rt] = r;
+    if(l == r){
+        tree[rt] = make_pair(a[pre[l]], l);
+        tree2[rt] = make_pair(a[pre[l]], l);
+        return ;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    build(rt &lt;&lt; 1, l, mid);
+    build(rt &lt;&lt; 1 | 1, mid + 1, r);
+    push_tree(rt);
+}
+void update(ll rt, ll l, ll r, ll L, ll R, ll v){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        tree[rt] = make_pair(tree[rt].first + v, l);
+        tree2[rt] = make_pair(tree2[rt].first + v, l);
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) update(rt &lt;&lt; 1, l, mid, L, R, v);
+    else update(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, v);
+    push_tree(rt);
+}
+
+void query(ll rt, ll l, ll r, ll L, ll R, pair&lt;ll,ll&gt; &amp;a, pair&lt;ll,ll&gt; &amp;b){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        pair&lt;ll, ll&gt; pp[10];
+        pp[1] = a; pp[2] = b; pp[3] = tree[rt]; pp[4] = tree2[rt];
+        sort(pp + 1, pp + 1 + 4);
+        a = pp[4];
+        for(ll i = 3; i &gt;= 1; i --){
+            if(pp[i].first != pp[4].first){
+                b = pp[i];
+                return;
+            }
+        }
+        b = pp[4];
+        return;
+    }
+    push_tree(rt);
+    ll mid = (l + r) &gt;&gt; 1;
+    if(L &lt;= mid) query(rt &lt;&lt; 1, l, mid, L, R, a, b);
+    if(mid &lt; R) query(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, a, b);
+}
+void slove(ll x, ll y){
+    pair&lt;ll, ll&gt; mx = make_pair(-1, -1), cmx = make_pair(-1, -1);
+    while(top[x] != top[y]){
+        if(dfn[top[x]] &lt; dfn[top[y]]) swap(x, y);
+        query(1, 1, n, dfn[top[x]], dfn[x], mx, cmx);
+        x = fas[top[x]];
+    }
+    if(dfn[x] &gt; dfn[y]) swap(x, y);
+    query(1, 1, n, dfn[x], dfn[y], mx, cmx);
+    if(mx.first == -1 || cmx.first == -1 || mx.first == cmx.first){
+        PLN((ll) -1);
+        return ;
+    }
+    ll s1 = mx.first, s2 = cmx.first;
+    update(1, 1, n, mx.second, mx.second, -(s1 ));
+    update(1, 1, n, cmx.second, cmx.second, -(s2 ));
+    pair&lt;ll, ll&gt; mxs = tree[1], cmxs = tree2[1];
+    update(1, 1, n, mx.second, mx.second, (s1 ));
+    update(1, 1, n, cmx.second, cmx.second, (s2 ));
+    PLN2(cmx.first % mx.first, cmxs.first % mxs.first);
+}
+int main(){
+    MM(head, -1);
+    RLL(n);
+    FOR(i, 1, n - 1){
+        ll l, r; RLL2(l, r);
+        add(l, r); add(r, l);
+    }
+    FOR(i, 1, n) RLL(a[i]);
+    dfs1(1, 0);
+    dfs2(1, 1);
+    build(1, 1, n);
+    ll q;
+    RLL(q);
+    while (q --){
+        ll k; RLL(k);
+        if(k == 0){
+            ll x, v;
+            RLL2(x, v);
+            x = dfn[x];
+            update(1, 1, n, x, x, v);
+        }else{
+            ll x, y; RLL2(x, y);
+            slove(x, y);
+        }
+    }
+    return 0;
+}
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[轻重链剖分教程(自用) + 模版]]></title>
         <id>https://SandMonth.github.io/post/qzlpf/</id>
