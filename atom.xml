@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://SandMonth.github.io</id>
     <title>SandMonth</title>
-    <updated>2021-07-01T15:01:53.999Z</updated>
+    <updated>2021-07-01T15:07:07.417Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://SandMonth.github.io"/>
     <link rel="self" href="https://SandMonth.github.io/atom.xml"/>
@@ -1004,28 +1004,6 @@ int main(){
     return 0;
 }
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[关于]]></title>
-        <id>https://SandMonth.github.io/post/test/</id>
-        <link href="https://SandMonth.github.io/post/test/">
-        </link>
-        <updated>2021-04-21T09:14:45.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>该网站主要用于SandMonth的语文写作能力训练(嘻嘻嘻),分享自己的技术文章和算法题解,有时候也会分享奇奇怪怪的东西。</p>
-</blockquote>
-<h2 id="关于本站">🏠关于本站</h2>
-<pre><code>无
-</code></pre>
-<h2 id="博主是谁">🥗🐶博主是谁</h2>
-<pre><code>SandMonth
-</code></pre>
-<h2 id="兴趣爱好">🐛兴趣爱好</h2>
-<pre><code>建模,钢琴(学ing),绘画(拖ing),AMD视频剪辑(拖ing),程序,中式古建筑(一点ing)
-</code></pre>
-<h2 id="️联系博主">✈️联系博主</h2>
-<pre><code>无</code></pre>
 ]]></content>
     </entry>
 </feed>
