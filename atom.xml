@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://SandMonth.github.io</id>
     <title>SandMonth</title>
-    <updated>2021-07-01T15:07:07.417Z</updated>
+    <updated>2021-07-11T15:44:26.503Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://SandMonth.github.io"/>
     <link rel="self" href="https://SandMonth.github.io/atom.xml"/>
@@ -10,6 +10,284 @@
     <logo>https://SandMonth.github.io/images/avatar.png</logo>
     <icon>https://SandMonth.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, SandMonth</rights>
+    <entry>
+        <title type="html"><![CDATA[[树链剖分,LCA,换根]CF916E Jamie and Tree]]></title>
+        <id>https://SandMonth.github.io/post/cf916e/</id>
+        <link href="https://SandMonth.github.io/post/cf916e/">
+        </link>
+        <updated>2021-07-11T15:39:30.000Z</updated>
+        <summary type="html"><![CDATA[<p>[树链剖分,LCA,换根]CF916E Jamie and Tree</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>[树链剖分,LCA,换根]CF916E Jamie and Tree</p>
+<!-- more -->
+<blockquote>
+<p>前置知识： 线段树 树链剖分 LCA<br>
+题目： CF916E Jamie and Tree</p>
+</blockquote>
+<h3 id="题意">题意：</h3>
+<p>有一棵n个节点的有根树，标号为1-n，你需要维护以下三种操作</p>
+<ol>
+<li>
+<p>给定一个点v，将整颗树的根变为v</p>
+</li>
+<li>
+<p>给定两个点u, v，寻找最小子树包含u,v的点并把该树的子树加上x</p>
+</li>
+<li>
+<p>给定一个点v，你需要回答以v所在的子树的权值和</p>
+</li>
+</ol>
+<h3 id="题解">题解:</h3>
+<p>分析题目，如果将第一个操作去除 那么其实就是树链剖分的裸题，对于第二个操作可以直接使用LCA来找出该点，因为只需要找到两个点中的最近公共祖先即可。</p>
+<p>那么加上第一个操作,也就是将整颗树换根，暴力的想每次换根重新计算一次dfs不太现实,那么可以在初始时将1做为树的根结点之后换根时以一个root变量来记录,之后的操作以root和原始根1来进行计算。</p>
+<p>我们先讨论加上换根之后第3个操作如何实现。</p>
+<p>首先分类讨论</p>
+<ol>
+<li>如果要找的点v刚好是root则直接输出整颗树的和</li>
+<li>如果v是root的子树中的一个值，则直接找v的子树即可， 因为不敢如何根的子树范围是不会变的如图</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://SandMonth.github.io/post-images/1626018113521.png" alt="" loading="lazy"></figure>
+<ol start="3">
+<li>如果是在root子树之上则 需要找到对于v点所在的一个子结点包括root点的点，有点抽象看图吧<br>
+<img src="https://SandMonth.github.io/post-images/1626018120856.png" alt="" loading="lazy"><br>
+以上就是换根后的需要注意的点</li>
+</ol>
+<pre><code class="language-cpp">ll lca(ll x, ll y){
+    while(top[x] != top[y]){
+        if(deep[top[x]] &lt; deep[top[y]]) swap(x, y);
+        if(fas[top[x]] == y) return top[x];
+        x = fas[top[x]];
+    }
+    if(dfn[x] &gt; dfn[y]) swap(x, y);
+    return wson[x];
+}
+ll querys(ll x){
+    if(x == root) return tree[1];
+    if(dfn[x] &lt;= dfn[root] &amp;&amp; dfn[root] &lt;= dfn[x] + sz[x] - 1){
+        ll v = lca(x, root);
+            ll ans = query(1, 1, n, 1, n);
+            ans -= query(1, 1, n, dfn[v], dfn[v] + sz[v] - 1);
+        return ans;
+    }
+    return query(1, 1, n, dfn[x], dfn[x] + sz[x] - 1);
+}
+</code></pre>
+<p>之后我们再讨论 对于u和v的修改操作</p>
+<p>还是分类讨论</p>
+<ol>
+<li>如果x和y在root子树，则点LCA(x, y) 就是换根之后需要修改的值</li>
+<li>x和y其中一个在root的子树中，那么要修改的子树点必定是root<br>
+<img src="https://SandMonth.github.io/post-images/1626018148274.png" alt="" loading="lazy"></li>
+<li>x和y不在root子树中，那么需要x和y 与root之间的关系,也就是它们到达的最低点p，u，分别代表x和root之间的lca和y和root之间的lca 中层次最大的点<br>
+<img src="https://SandMonth.github.io/post-images/1626018153237.png" alt="" loading="lazy"></li>
+</ol>
+<pre><code class="language-cpp">ll LCA(ll x, ll y ){
+    while(top[x] != top[y]){
+        if(deep[top[x]] &lt; deep[top[y]]) swap(x, y);
+        x = fas[top[x]];
+    }
+    if(deep[x] &gt; deep[y]) swap(x, y);
+    return x;
+}
+void up_tree(ll x, ll y, ll v){
+    ll as = LCA(x, root), bs = LCA(y, root), cs = LCA(x, y);
+    ll vs = as;
+    if(deep[vs] &lt;= deep[bs]) vs = bs;
+    if(deep[vs] &lt;= deep[cs]) vs = cs;
+    if(vs == root) {
+        update(1, 1, n, 1, n, v);
+        return;
+    }
+    if(dfn[vs] &lt;= dfn[root] &amp;&amp; dfn[root] &lt;= dfn[vs] + sz[vs] - 1){
+        ll pp = lca(vs, root);
+        update(1, 1, n, 1, n, v);
+        vs = pp;
+        update(1, 1, n, dfn[vs], dfn[vs] + sz[vs] - 1, -v);
+        return;
+    }
+    update(1, 1, n, dfn[vs], dfn[vs] + sz[vs] - 1, v);
+    return;
+}
+</code></pre>
+<blockquote>
+<p>复杂度: O(nmlogn)</p>
+</blockquote>
+<h3 id="完整代码">完整代码</h3>
+<pre><code class="language-cpp">const long long inf=1e18;
+const int N= 7e5 + 10;
+const int M= 2e5 + 10;
+const ll mod=1e9+7;
+using namespace std;
+ll n, q;
+ll a[N];
+struct Node{
+    ll to, nxt;
+}e[N];
+ll head[N], tot = 0;
+void add(ll a, ll b){
+    e[tot].to = b;
+    e[tot].nxt = head[a];
+    head[a] = tot ++;
+}
+ll wson[N], sz[N], dfn[N], deep[N], fas[N], pre[N], top[N];
+void dfs1(ll to, ll fa){
+    sz[to] = 1;
+    deep[to] = deep[fa] + 1;
+    fas[to] = fa;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == fa) continue;
+        dfs1(y, to);
+        sz[to] += sz[y];
+
+        if(sz[wson[to]] &lt; sz[y]) wson[to] = y;
+    }
+}
+ll cnt =0 ;
+void dfs2(ll to, ll de){
+    dfn[to] = ++ cnt;
+    pre[cnt] = to;
+    top[to] = de;
+    if(wson[to]) dfs2(wson[to], de);
+    else return ;
+    for(ll i = head[to]; i + 1; i = e[i].nxt){
+        ll y = e[i].to;
+        if(y == fas[to] || y == wson[to]) continue;
+        dfs2(y, y);
+    }
+}
+ll tree[N], lazy[N];
+void build(ll rt, ll l, ll r){
+    if(l == r) {
+        tree[rt] += a[pre[l]];
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    build(rt &lt;&lt; 1, l, mid);
+    build(rt &lt;&lt; 1 | 1, mid + 1, r);
+    tree[rt] = tree[rt &lt;&lt; 1] + tree[rt &lt;&lt; 1 | 1];
+}
+void push_lazy(ll rt, ll l, ll r){
+    if(lazy[rt]){
+        lazy[rt &lt;&lt; 1] += lazy[rt];
+        lazy[rt &lt;&lt; 1 | 1] += lazy[rt];
+        ll mid = (l + r) &gt;&gt; 1;
+        ll ls = l, rs = mid;
+        tree[rt &lt;&lt; 1] += (rs - ls + 1) * lazy[rt];
+        ls = mid + 1; rs = r;
+        tree[rt &lt;&lt; 1 | 1] += (rs - ls + 1) * lazy[rt];
+        lazy[rt] = 0;
+    }
+}
+void update(ll rt, ll l, ll r, ll L, ll R, ll v){
+    if(L &lt;= l &amp;&amp; r &lt;= R){
+        tree[rt] += (r - l + 1) * v;
+        lazy[rt] += v;
+        return;
+    }
+    ll mid = (l + r) &gt;&gt; 1;
+    push_lazy(rt, l, r);
+    if(L &lt;= mid) update(rt &lt;&lt; 1, l, mid, L, R, v);
+    if(mid &lt; R) update(rt &lt;&lt; 1 | 1, mid + 1, r, L, R, v);
+    push_lazy(rt, l, r);
+    tree[rt] = tree[rt &lt;&lt; 1] + tree[rt &lt;&lt; 1| 1];
+}
+ll root = 1;
+ll LCA(ll x, ll y ){
+    while(top[x] != top[y]){
+        if(deep[top[x]] &lt; deep[top[y]]) swap(x, y);
+        x = fas[top[x]];
+    }
+    if(deep[x] &gt; deep[y]) swap(x, y);
+    return x;
+}
+ll lca(ll x, ll y){
+    while(top[x] != top[y]){
+        if(deep[top[x]] &lt; deep[top[y]]) swap(x, y);
+        if(fas[top[x]] == y) return top[x];
+        x = fas[top[x]];
+    }
+    if(dfn[x] &gt; dfn[y]) swap(x, y);
+    return wson[x];
+}
+ll get(ll x){
+    ll v = root;
+    while(top[v] != top[x]){
+        if(fas[top[v]] == x) return top[v];
+        v = fas[top[v]];
+    }
+    return wson[x];
+}
+void up_tree(ll x, ll y, ll v){
+    ll as = LCA(x, root), bs = LCA(y, root), cs = LCA(x, y);
+    ll vs = as;
+    if(deep[vs] &lt;= deep[bs]) vs = bs;
+    if(deep[vs] &lt;= deep[cs]) vs = cs;
+    if(vs == root) {
+        update(1, 1, n, 1, n, v);
+        return;
+    }
+    if(dfn[vs] &lt;= dfn[root] &amp;&amp; dfn[root] &lt;= dfn[vs] + sz[vs] - 1){
+        ll pp = lca(vs, root);
+        update(1, 1, n, 1, n, v);
+        vs = pp;
+        update(1, 1, n, dfn[vs], dfn[vs] + sz[vs] - 1, -v);
+        return;
+    }
+    update(1, 1, n, dfn[vs], dfn[vs] + sz[vs] - 1, v);
+    return;
+}
+ll query(ll rt, ll l, ll r, ll L, ll R){
+    if(L &lt;= l &amp;&amp; r &lt;= R) return tree[rt];
+    ll mid = (l + r) &gt;&gt; 1;
+    push_lazy(rt, l, r);
+    ll ans = 0;
+    if(L &lt;= mid) ans += query(rt &lt;&lt; 1, l, mid, L, R);
+    if(mid &lt; R) ans += query(rt &lt;&lt; 1 | 1, mid + 1, r, L, R);
+    push_lazy(rt, l, r);
+    tree[rt] =  tree[rt &lt;&lt; 1 | 1] + tree[rt &lt;&lt; 1];
+    return ans;
+}
+ll querys(ll x){
+    if(x == root) return tree[1];
+    if(dfn[x] &lt;= dfn[root] &amp;&amp; dfn[root] &lt;= dfn[x] + sz[x] - 1){
+        ll v = lca(x, root);
+            ll ans = query(1, 1, n, 1, n);
+            ans -= query(1, 1, n, dfn[v], dfn[v] + sz[v] - 1);
+        return ans;
+    }
+    return query(1, 1, n, dfn[x], dfn[x] + sz[x] - 1);
+}
+int main(){
+    RLL2(n, q);
+    MM(head, -1);
+    FOR(i, 1, n) RLL(a[i]);
+    FOR(i, 1, n - 1) {
+        ll l, r;
+        RLL2(l, r);
+        add(l, r);add(r, l);
+    }
+    dfs1(1, 0);
+    dfs2(1, 1);
+    build(1, 1, n);
+    while(q --){
+        ll k; RLL(k);
+        if(k == 1){
+            RLL(root);
+        }else if(k == 2){
+            ll l, r, v;
+            RLL3(l, r, v);
+            up_tree(l, r, v);
+        }else{
+            ll v; RLL(v);
+            PLN(querys(v));
+        }
+    }
+    return 0;
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ [落谷-紫题-线段树-树链剖分] P6157-有趣的游戏]]></title>
         <id>https://SandMonth.github.io/post/P6157youqudeyouxi/</id>
